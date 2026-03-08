@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#10b77f",
+            "background-light": "#f6f8f7",
+            "background-dark": "#10221c",
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <title>Kelola Kategori - FinTrack</title>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+  <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Top App Bar -->
+    <header
+      class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-primary/10">
+      <div class="flex items-center gap-4">
+        <button
+          class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h2 class="text-lg font-bold leading-tight tracking-tight">Kelola Kategori</h2>
+      </div>
+      <button
+        class="text-primary font-semibold text-sm px-3 py-1 rounded-full border border-primary/20 hover:bg-primary/5 transition-colors">
+        Bantuan
+      </button>
+    </header>
+    <main class="flex-1 max-w-[480px] mx-auto w-full pb-24">
+      <!-- Add New Category Form Section -->
+      <section class="p-4 space-y-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold">Tambah Kategori Baru</h3>
+          <span
+            class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">Langkah
+            1/2</span>
+        </div>
+        <!-- Input Name -->
+        <div class="space-y-2">
+          <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Nama Kategori</label>
+          <input
+            class="form-input flex w-full rounded-xl border-primary/20 bg-white dark:bg-slate-900 focus:border-primary focus:ring-primary text-base p-4 transition-all"
+            placeholder="Contoh: Makan, Gaji, Investasi" type="text" />
+        </div>
+        <!-- Color Picker -->
+        <div class="space-y-3">
+          <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Warna Identitas</label>
+          <div class="flex flex-wrap gap-3">
+            <button
+              class="size-10 rounded-full bg-primary ring-2 ring-primary ring-offset-2 dark:ring-offset-background-dark transition-transform hover:scale-110"></button>
+            <button class="size-10 rounded-full bg-blue-500 transition-transform hover:scale-110"></button>
+            <button class="size-10 rounded-full bg-orange-500 transition-transform hover:scale-110"></button>
+            <button class="size-10 rounded-full bg-purple-500 transition-transform hover:scale-110"></button>
+            <button class="size-10 rounded-full bg-pink-500 transition-transform hover:scale-110"></button>
+            <button class="size-10 rounded-full bg-amber-500 transition-transform hover:scale-110"></button>
+            <button
+              class="size-10 rounded-full bg-slate-500 transition-transform hover:scale-110 flex items-center justify-center">
+              <span class="material-symbols-outlined text-white text-sm">palette</span>
+            </button>
+          </div>
+        </div>
+        <!-- Icon Picker Grid -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Pilih Ikon</label>
+            <button class="text-primary text-xs font-bold uppercase">Lihat Semua</button>
+          </div>
+          <div class="grid grid-cols-4 gap-3">
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border-2 border-primary bg-primary/5 text-primary cursor-pointer transition-all">
+              <span class="material-symbols-outlined text-2xl">restaurant</span>
+              <span class="text-[10px] font-bold uppercase">Makan</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">directions_car</span>
+              <span class="text-[10px] font-bold uppercase">Transp</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">payments</span>
+              <span class="text-[10px] font-bold uppercase">Gaji</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">shopping_bag</span>
+              <span class="text-[10px] font-bold uppercase">Belanja</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">favorite</span>
+              <span class="text-[10px] font-bold uppercase">Sehat</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">home</span>
+              <span class="text-[10px] font-bold uppercase">Rumah</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">smartphone</span>
+              <span class="text-[10px] font-bold uppercase">Pulsa</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border border-primary/10 bg-white dark:bg-slate-900 text-slate-400 cursor-pointer hover:border-primary/40 transition-all">
+              <span class="material-symbols-outlined text-2xl">featured_seasonal_and_gifts</span>
+              <span class="text-[10px] font-bold uppercase">Hobi</span>
+            </div>
+          </div>
+        </div>
+        <button
+          class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">add_circle</span>
+          Simpan Kategori
+        </button>
+      </section>
+      <hr class="border-primary/5 mx-4 my-2" />
+      <!-- Existing Categories List -->
+      <section class="p-4 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold">Kategori Aktif</h3>
+          <span class="text-sm font-medium text-slate-500">8 Kategori</span>
+        </div>
+        <div class="space-y-3">
+          <!-- Category Item -->
+          <div
+            class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-primary/10 hover:shadow-md transition-shadow group">
+            <div class="flex items-center gap-4">
+              <div
+                class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center">
+                <span class="material-symbols-outlined">restaurant</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 dark:text-slate-100">Makan &amp; Minum</h4>
+                <p class="text-xs text-slate-500">Pengeluaran • 12 Transaksi</p>
+              </div>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button
+                class="size-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <!-- Category Item -->
+          <div
+            class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-primary/10 hover:shadow-md transition-shadow group">
+            <div class="flex items-center gap-4">
+              <div
+                class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                <span class="material-symbols-outlined">commute</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 dark:text-slate-100">Transportasi</h4>
+                <p class="text-xs text-slate-500">Pengeluaran • 5 Transaksi</p>
+              </div>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button
+                class="size-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <!-- Category Item (Income Type) -->
+          <div
+            class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-primary/10 hover:shadow-md transition-shadow group">
+            <div class="flex items-center gap-4">
+              <div class="size-12 rounded-full bg-primary/20 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined">payments</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 dark:text-slate-100">Gaji Bulanan</h4>
+                <p class="text-xs text-slate-500">Pemasukan • 1 Transaksi</p>
+              </div>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button
+                class="size-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <!-- Category Item -->
+          <div
+            class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-primary/10 hover:shadow-md transition-shadow group">
+            <div class="flex items-center gap-4">
+              <div
+                class="size-12 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 flex items-center justify-center">
+                <span class="material-symbols-outlined">shopping_cart</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 dark:text-slate-100">Belanja Bulanan</h4>
+                <p class="text-xs text-slate-500">Pengeluaran • 8 Transaksi</p>
+              </div>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button
+                class="size-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Bottom Navigation Bar for context -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-primary/10 items-center max-w-[480px] mx-auto z-20">
+      <div class="grid grid-cols-4 w-full h-16">
+        <button class="flex flex-col items-center justify-center text-slate-400 transition-colors">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="text-[10px] font-medium">Dashboard</span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-slate-400 transition-colors">
+          <span class="material-symbols-outlined">history</span>
+          <span class="text-[10px] font-medium">Riwayat</span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-primary font-bold transition-colors">
+          <span class="material-symbols-outlined">category</span>
+          <span class="text-[10px] font-medium">Kategori</span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-slate-400 transition-colors">
+          <span class="material-symbols-outlined">person</span>
+          <span class="text-[10px] font-medium">Profil</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</body>
+
+</html>
