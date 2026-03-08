@@ -5,6 +5,7 @@ import 'package:fintrack/screens/dashboard_screen.dart';
 import 'package:fintrack/providers/transaksi_provider.dart';
 import 'package:fintrack/providers/theme_provider.dart';
 import 'package:fintrack/providers/user_provider.dart';
+import 'package:fintrack/providers/kategori_provider.dart';
 import 'package:fintrack/screens/onboarding_screen.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => TransaksiProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => KategoriProvider()),
       ],
       child: const FinTrackApp(),
     ),

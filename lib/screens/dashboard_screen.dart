@@ -9,6 +9,7 @@ import 'transaksi_screen.dart';
 import 'riwayat_screen.dart';
 import 'profil_screen.dart';
 import 'kategori_screen.dart';
+import 'pengaturan_screen.dart';
 import 'package:intl/intl.dart';
 import '../providers/user_provider.dart';
 import 'dart:io';
@@ -121,17 +122,26 @@ class DashboardContent extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.settings_outlined, size: 20)),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PengaturanScreen()),
+              );
+            }, 
+            icon: const Icon(Icons.settings_outlined, size: 20)
+          ),
           const SizedBox(width: 8),
         ],
       ),
-      body: Consumer<TransaksiProvider>(
-        builder: (context, provider, child) {
+      body: Consumer2<TransaksiProvider, UserProvider>(
+        builder: (context, provider, userProvider, child) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           final daftar = provider.daftarTransaksi;
+          final accNumber = DateFormat('yyyy MMdd').format(userProvider.createdAt);
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -139,7 +149,7 @@ class DashboardContent extends StatelessWidget {
               children: [
                 RingkasanCard(
                   balance: provider.totalSaldo,
-                  accountNumber: '**** 8829',
+                  accountNumber: accNumber,
                 ),
                 const SizedBox(height: 16),
                 Row(

@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../utils/app_theme.dart';
 import '../providers/transaksi_provider.dart';
+import '../providers/kategori_provider.dart';
 import '../widgets/transaksi_card.dart';
-
+import '../models/transaksi.dart';
+import '../models/kategori.dart';
 import 'transaksi_screen.dart';
 
 class RiwayatScreen extends StatefulWidget {
@@ -15,10 +17,19 @@ class RiwayatScreen extends StatefulWidget {
 }
 
 class _RiwayatScreenState extends State<RiwayatScreen> {
-  String _selectedFilter = 'Semua';
+  String _selectedType = 'Semua';
+  String _searchQuery = '';
+  DateTime? _selectedDate;
   final List<String> _filters = ['Semua', 'Pemasukan', 'Pengeluaran'];
+  final TextEditingController _searchController = TextEditingController();
 
-  void _showOptions(BuildContext context, dynamic t) {
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _showOptions(BuildContext context, Transaksi t) {
     final provider = Provider.of<TransaksiProvider>(context, listen: false);
     
     showModalBottomSheet(
@@ -87,6 +98,30 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -98,51 +133,115 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
         title: const Text('Riwayat Transaksi'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
+        actions: [
+          if (_selectedDate != null)
+            IconButton(
+              icon: const Icon(Icons.event_busy, color: Colors.red),
+              onPressed: () => setState(() => _selectedDate = null),
+              tooltip: 'Hapus filter tanggal',
+            ),
+          IconButton(
+            icon: Icon(Icons.calendar_month, color: _selectedDate != null ? AppTheme.primaryColor : Colors.grey),
+            onPressed: () => _selectDate(context),
+            tooltip: 'Filter Tanggal',
+          ),
+        ],
       ),
-      body: Consumer<TransaksiProvider>(
-        builder: (context, provider, child) {
+      body: Consumer2<TransaksiProvider, KategoriProvider>(
+        builder: (context, provider, kategoriProvider, child) {
           final allDocs = provider.daftarTransaksi;
           
           // Apply filter
           final filteredDocs = allDocs.where((t) {
-            if (_selectedFilter == 'Semua') return true;
-            return t.jenis.toLowerCase() == _selectedFilter.toLowerCase();
+            // Type Filter
+            bool typeMatch = _selectedType == 'Semua' || t.jenis.toLowerCase() == _selectedType.toLowerCase();
+            
+            // Search Filter
+            bool searchMatch = _searchQuery.isEmpty || t.keterangan.toLowerCase().contains(_searchQuery.toLowerCase()) || t.kategori.toLowerCase().contains(_searchQuery.toLowerCase());
+            
+            // Date Filter
+            bool dateMatch = _selectedDate == null || 
+              (t.tanggal.year == _selectedDate!.year && 
+               t.tanggal.month == _selectedDate!.month && 
+               t.tanggal.day == _selectedDate!.day);
+
+            return typeMatch && searchMatch && dateMatch;
           }).toList();
 
           return Column(
             children: [
+              // Search Bar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (val) => setState(() => _searchQuery = val),
+                  decoration: InputDecoration(
+                    hintText: 'Cari transaksi atau kategori...',
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    suffixIcon: _searchQuery.isNotEmpty 
+                      ? IconButton(
+                          icon: const Icon(Icons.clear, size: 20),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                        ) 
+                      : null,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  ),
+                ),
+              ),
+
               // Filter Chips
               Container(
-                height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                height: 50,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: _filters.length,
                   separatorBuilder: (context, index) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final filter = _filters[index];
-                    final isSelected = _selectedFilter == filter;
+                    final isSelected = _selectedType == filter;
                     return ChoiceChip(
                       label: Text(filter),
                       selected: isSelected,
                       onSelected: (val) {
-                        setState(() => _selectedFilter = filter);
+                        setState(() => _selectedType = filter);
                       },
                       selectedColor: AppTheme.primaryColor.withOpacity(0.2),
                       labelStyle: TextStyle(
                         color: isSelected ? AppTheme.primaryColor : Colors.grey,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontSize: 13,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                         side: BorderSide(
-                          color: isSelected ? AppTheme.primaryColor : Colors.black.withOpacity(0.05),
+                          color: isSelected ? AppTheme.primaryColor : Colors.grey.withOpacity(0.2),
                         ),
                       ),
                     );
                   },
                 ),
               ),
+
+              if (_selectedDate != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.event, size: 14, color: AppTheme.primaryColor.withOpacity(0.7)),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Tanggal: ${DateFormat('dd MMMM yyyy').format(_selectedDate!)}',
+                        style: TextStyle(fontSize: 12, color: AppTheme.primaryColor, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
 
               // Transaction List
               Expanded(
@@ -151,9 +250,14 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.history_toggle_off, size: 64, color: Colors.grey.withOpacity(0.5)),
+                            Icon(Icons.search_off, size: 64, color: Colors.grey.withOpacity(0.5)),
                             const SizedBox(height: 16),
-                            const Text('Tidak ada riwayat transaksi', style: TextStyle(color: Colors.grey)),
+                            Text(
+                              _searchQuery.isNotEmpty || _selectedDate != null
+                                ? 'Hasil tidak ditemukan'
+                                : 'Tidak ada riwayat transaksi',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
                           ],
                         ),
                       )
@@ -162,12 +266,22 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                         itemCount: filteredDocs.length,
                         itemBuilder: (context, index) {
                           final t = filteredDocs[index];
+                          
+                          // Find category data for icon & color
+                          final catData = kategoriProvider.daftarKategori.firstWhere(
+                            (c) => c.nama == t.kategori,
+                            orElse: () => Kategori(
+                              id: '', nama: t.kategori, iconCode: Icons.category.codePoint, 
+                              jenis: t.jenis, colorValue: Colors.grey.value
+                            ),
+                          );
+
                           return TransaksiCard(
                             category: t.kategori,
-                            dateDesc: '${t.keterangan} • ${DateFormat('dd MMM yyyy').format(t.tanggal)}',
+                            dateDesc: '${t.keterangan}${t.keterangan.isNotEmpty ? ' • ' : ''}${DateFormat('dd MMM yyyy').format(t.tanggal)}',
                             amount: NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 2).format(t.jumlah).trim(),
-                            icon: _getIconForCategory(t.kategori),
-                            iconColor: _getColorForCategory(t.kategori),
+                            icon: catData.iconData,
+                            iconColor: Color(catData.colorValue),
                             isIncome: t.jenis == 'pemasukan',
                             onTap: () => _showOptions(context, t),
                           );
@@ -179,28 +293,5 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
         },
       ),
     );
-  }
-
-
-  IconData _getIconForCategory(String category) {
-    switch (category) {
-      case 'Gaji': return Icons.payments_outlined;
-      case 'Makan & Minum': return Icons.restaurant_outlined;
-      case 'Transportasi': return Icons.commute_outlined;
-      case 'Belanja': return Icons.shopping_bag_outlined;
-      case 'Hiburan': return Icons.sports_esports_outlined;
-      default: return Icons.category_outlined;
-    }
-  }
-
-  Color _getColorForCategory(String category) {
-    switch (category) {
-      case 'Gaji': return AppTheme.primaryColor;
-      case 'Makan & Minum': return Colors.orange;
-      case 'Transportasi': return Colors.blue;
-      case 'Belanja': return Colors.purple;
-      case 'Hiburan': return Colors.pink;
-      default: return Colors.grey;
-    }
   }
 }

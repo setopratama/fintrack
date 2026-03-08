@@ -87,4 +87,21 @@ class TransaksiProvider extends ChangeNotifier {
     final categories = _daftarTransaksi.map((t) => t.kategori).toSet();
     return categories.length;
   }
+
+  // Mass update category name (used when a category is deleted)
+  Future<void> gantiKategori(String kategoriLama, String kategoriBaru) async {
+    bool adaPerubahan = false;
+    final daftarUpdate = _daftarTransaksi.map((t) {
+      if (t.kategori == kategoriLama) {
+        adaPerubahan = true;
+        return t.copyWith(kategori: kategoriBaru);
+      }
+      return t;
+    }).toList();
+
+    if (adaPerubahan) {
+      await StorageService.simpanSemua(daftarUpdate);
+      await muatData();
+    }
+  }
 }

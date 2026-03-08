@@ -6,7 +6,7 @@ import '../utils/app_theme.dart';
 import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/transaksi_provider.dart';
-
+import 'faq_screen.dart';
 class ProfilScreen extends StatelessWidget {
   const ProfilScreen({super.key});
 
@@ -71,7 +71,7 @@ class ProfilScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       GestureDetector(
-                        onTap: () => _editName(context, userProvider),
+                        onTap: () => _editProfile(context, userProvider),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -153,15 +153,9 @@ class ProfilScreen extends StatelessWidget {
                     activeColor: AppTheme.primaryColor,
                   ),
                 ),
-                _buildMenuItem(Icons.person_outline, 'Edit Profil', Colors.blue, onTap: () => _editName(context, userProvider)),
-                _buildMenuItem(Icons.notifications_none, 'Notifikasi', Colors.orange),
-                _buildMenuItem(Icons.security_outlined, 'Keamanan', Colors.green),
-                
-                const SizedBox(height: 24),
-                
-                _buildSectionTitle('Data & Backup'),
-                _buildMenuItem(Icons.cloud_upload_outlined, 'Export Data (JSON)', Colors.teal),
-                _buildMenuItem(Icons.cloud_download_outlined, 'Import Data (JSON)', Colors.indigo),
+                _buildMenuItem(Icons.person_outline, 'Edit Profil', Colors.blue, onTap: () => _editProfile(context, userProvider)),
+                _buildMenuItem(Icons.notifications_none, 'Notifikasi', Colors.orange, onTap: () => _showComingSoon(context)),
+                _buildMenuItem(Icons.security_outlined, 'Keamanan', Colors.green, onTap: () => _showComingSoon(context)),
                 
                 const SizedBox(height: 24),
 
@@ -178,12 +172,26 @@ class ProfilScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _buildChangelogItem('❓ Halaman FAQ / Bantuan Interaktif'),
+                        _buildChangelogItem('👋 Deskripsi Onboarding Baru'),
+                        _buildChangelogItem('📘 Integrasi FAQ_FINTRACK.md'),
+                        _buildChangelogItem('⚙️ Halaman Pengaturan Baru'),
+                        _buildChangelogItem('💳 Nomor Akun Dashboard (YYYY MMDD)'),
+                        _buildChangelogItem('🌐 Atribusi www.somatechno.com'),
+                        _buildChangelogItem('🛠️ Relokasi Menu Backup'),
+                        _buildChangelogItem('🔍 Pencarian & Filter Riwayat'),
+                        _buildChangelogItem('💾 Export & Import Data (Backup)'),
+                        _buildChangelogItem('🔄 Filter Cerdas Jenis Transaksi'),
+                        _buildChangelogItem('🌈 Ikon & Warna di Dropdown'),
+                        _buildChangelogItem('🚧 Popup "Segera Hadir" Menu Profil'),
+                        _buildChangelogItem('🎨 Kelola Kategori (Ikon & Warna)'),
+                        _buildChangelogItem('🔒 Proteksi Kategori Wajib'),
+                        _buildChangelogItem('📧 Edit Email di Profil Saya'),
+                        _buildChangelogItem('🛠️ Relokasi Transaksi Otomatis'),
                         _buildChangelogItem('👋 Onboarding untuk Pengguna Baru'),
-                        _buildChangelogItem('📸 Unggah Foto & Edit Nama Profil'),
-                        _buildChangelogItem('🔢 Format Ribuan Otomatis (Input)'),
+                        _buildChangelogItem('📸 Unggah Foto & Edit Nama Profil Profil'),
                         _buildChangelogItem('💰 Tampilan Saldo Presisi (,00)'),
                         _buildChangelogItem('🌗 Dukungan Mode Gelap'),
-                        _buildChangelogItem('✨ Filter Riwayat Transaksi'),
                       ],
                     ),
                   ),
@@ -192,9 +200,15 @@ class ProfilScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 
                 _buildSectionTitle('Lainnya'),
-                _buildMenuItem(Icons.help_outline, 'Pusat Bantuan', Colors.purple),
+                _buildMenuItem(Icons.help_outline, 'FAQ / Bantuan', Colors.purple, onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FaqScreen()),
+                  );
+                }),
                 _buildMenuItem(Icons.logout, 'Keluar', Colors.red, isLast: true),
                 
+                const SizedBox(height: 48),
                 const SizedBox(height: 40),
               ],
             ),
@@ -214,24 +228,48 @@ class ProfilScreen extends StatelessWidget {
     }
   }
 
-  void _editName(BuildContext context, UserProvider provider) {
-    final controller = TextEditingController(text: provider.name);
+  void _editProfile(BuildContext context, UserProvider provider) {
+    final nameController = TextEditingController(text: provider.name);
+    final emailController = TextEditingController(text: provider.email);
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Ubah Nama'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'Masukkan nama baru'),
-          autofocus: true,
+        title: const Text('Edit Profil'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Nama Lengkap',
+                hintText: 'Masukkan nama',
+              ),
+              autofocus: true,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'email@email.com',
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+          ],
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
           TextButton(
             onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                provider.updateName(controller.text.trim());
+              if (nameController.text.trim().isNotEmpty) {
+                provider.updateName(nameController.text.trim());
+                provider.updateEmail(emailController.text.trim());
                 Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Nama tidak boleh kosong')),
+                );
               }
             }, 
             child: const Text('Simpan'),
@@ -317,6 +355,18 @@ class ProfilScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showComingSoon(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Fitur Segera Hadir! 🏗️'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF059669), // Warna hijau emerald
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

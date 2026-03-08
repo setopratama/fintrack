@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../utils/app_theme.dart';
 import '../providers/transaksi_provider.dart';
+import '../providers/kategori_provider.dart';
 import '../models/transaksi.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
@@ -96,7 +97,12 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                       label: 'Pemasukan',
                       isActive: _transactionType == 'pemasukan',
                       activeColor: AppTheme.primaryColor,
-                      onTap: () => setState(() => _transactionType = 'pemasukan'),
+                      onTap: () {
+                        setState(() {
+                          _transactionType = 'pemasukan';
+                          _selectedCategory = null; // Reset category when switching type
+                        });
+                      },
                     ),
                   ),
                   Expanded(
@@ -104,7 +110,12 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                       label: 'Pengeluaran',
                       isActive: _transactionType == 'pengeluaran',
                       activeColor: AppTheme.expenseColor,
-                      onTap: () => setState(() => _transactionType = 'pengeluaran'),
+                      onTap: () {
+                        setState(() {
+                          _transactionType = 'pengeluaran';
+                          _selectedCategory = null; // Reset category when switching type
+                        });
+                      },
                     ),
                   ),
                 ],
@@ -138,17 +149,45 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             // Category Picker
             const Text('Kategori', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey)),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: _selectedCategory,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.category_outlined, color: AppTheme.primaryColor),
-                hintText: 'Pilih Kategori',
-                fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
-              ),
-              items: ['Gaji', 'Makan & Minum', 'Transportasi', 'Belanja', 'Hiburan']
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
-              onChanged: (val) => setState(() => _selectedCategory = val),
+            Consumer<KategoriProvider>(
+              builder: (context, kategoriProvider, child) {
+                final filteredCategories = kategoriProvider.filterByJenis(_transactionType);
+                
+                // If current selected category is not in the filtered list, reset it
+                if (_selectedCategory != null && !filteredCategories.any((element) => element.nama == _selectedCategory)) {
+                  _selectedCategory = null;
+                }
+
+                return DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.category_outlined, color: AppTheme.primaryColor),
+                    hintText: 'Pilih Kategori',
+                    fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                  ),
+                  items: filteredCategories
+                      .map((e) => DropdownMenuItem(
+                        value: e.nama, 
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Color(e.colorValue).withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(e.iconData, size: 18, color: Color(e.colorValue)),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(e.nama),
+                          ],
+                        )
+                      ))
+                      .toList(),
+                  onChanged: (val) => setState(() => _selectedCategory = val),
+                  validator: (value) => value == null ? 'Pilih kategori' : null,
+                );
+              },
             ),
             const SizedBox(height: 24),
 

@@ -50,12 +50,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Ayo kelola keuanganmu lebih baik.\nSiapakah namamu?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'FinTrack adalah aplikasi pencatatan keuangan pribadi yang ringan, cepat, dan 100% offline. Aplikasi ini memungkinkan Anda mencatat semua pemasukan dan pengeluaran tanpa terhubung ke internet.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  height: 1.5,
+                ),
               ),
             ),
             const Spacer(),
