@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
 
@@ -9,6 +10,7 @@ class TransaksiCard extends StatelessWidget {
   final Color iconColor;
   final bool isIncome;
   final VoidCallback? onTap;
+  final String? imagePath;
 
   const TransaksiCard({
     super.key,
@@ -19,6 +21,7 @@ class TransaksiCard extends StatelessWidget {
     required this.iconColor,
     required this.isIncome,
     this.onTap,
+    this.imagePath,
   });
 
   @override
@@ -26,16 +29,17 @@ class TransaksiCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final bool useImage = imagePath != null && File(imagePath!).existsSync();
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark 
-            ? Colors.white.withOpacity(0.05) 
-            : Colors.black.withOpacity(0.03)
-        ),
+            color: isDark
+                ? Colors.white.withOpacity(0.05)
+                : Colors.black.withOpacity(0.03)),
       ),
       child: Material(
         color: Colors.transparent,
@@ -47,12 +51,23 @@ class TransaksiCard extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  width: 44,
+                  height: 44,
+                  padding: useImage ? EdgeInsets.zero : const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.05)
+                        : Colors.black.withOpacity(0.03),
                     shape: BoxShape.circle,
+                    image: useImage
+                        ? DecorationImage(
+                            image: FileImage(File(imagePath!)),
+                            fit: BoxFit.cover)
+                        : null,
                   ),
-                  child: Icon(icon, color: iconColor, size: 22),
+                  child: !useImage
+                      ? Icon(icon, color: iconColor, size: 22)
+                      : null,
                 ),
                 const SizedBox(width: 14),
                 Expanded(

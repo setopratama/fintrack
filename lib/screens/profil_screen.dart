@@ -7,6 +7,8 @@ import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/transaksi_provider.dart';
 import 'faq_screen.dart';
+import '../providers/kategori_provider.dart';
+
 class ProfilScreen extends StatelessWidget {
   const ProfilScreen({super.key});
 
@@ -17,17 +19,19 @@ class ProfilScreen extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor:
+          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text('Profil Saya'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Consumer2<UserProvider, TransaksiProvider>(
-        builder: (context, userProvider, transaksiProvider, child) {
-          final hasPhoto = userProvider.photoPath != null && userProvider.photoPath!.isNotEmpty;
-          
+      body: Consumer3<UserProvider, TransaksiProvider, KategoriProvider>(
+        builder: (context, userProvider, transaksiProvider, kategoriProvider, child) {
+          final hasPhoto = userProvider.photoPath != null &&
+              userProvider.photoPath!.isNotEmpty;
+
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -43,13 +47,18 @@ class ProfilScreen extends StatelessWidget {
                             height: 100,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppTheme.primaryColor, width: 3),
-                              image: hasPhoto 
-                                ? DecorationImage(image: FileImage(File(userProvider.photoPath!)), fit: BoxFit.cover)
-                                : const DecorationImage(
-                                    image: NetworkImage('https://lh3.googleusercontent.com/aida-public/AB6AXuDTYUxbu7jhnVQV4U-zLKLIfXeoj5q-yBltyUVrUbWly5hIvVU83D8JbFTRKYGmlbUj5vB1VKnu8_rdXLcT29JdjF_SwBAwcOjHkc0jR3ONU4I9eHrOsvVkdmsRM4qAXnUXCLSYK7pF0n5vEE2Cf0lqWcIMVQ4bb89eSKfXTxBCtx5PSJaVIGHS2dvHU3_n3enOZByeKXuBafhPBTwrs9XHI27ywaA4axee6TleB9tE3EZoGzBLR2DKHu4s2DExAyY2vU671HokYE9s'),
-                                    fit: BoxFit.cover,
-                                  ),
+                              border: Border.all(
+                                  color: AppTheme.primaryColor, width: 3),
+                              image: hasPhoto
+                                  ? DecorationImage(
+                                      image: FileImage(
+                                          File(userProvider.photoPath!)),
+                                      fit: BoxFit.cover)
+                                  : const DecorationImage(
+                                      image: NetworkImage(
+                                          'https://lh3.googleusercontent.com/aida-public/AB6AXuDTYUxbu7jhnVQV4U-zLKLIfXeoj5q-yBltyUVrUbWly5hIvVU83D8JbFTRKYGmlbUj5vB1VKnu8_rdXLcT29JdjF_SwBAwcOjHkc0jR3ONU4I9eHrOsvVkdmsRM4qAXnUXCLSYK7pF0n5vEE2Cf0lqWcIMVQ4bb89eSKfXTxBCtx5PSJaVIGHS2dvHU3_n3enOZByeKXuBafhPBTwrs9XHI27ywaA4axee6TleB9tE3EZoGzBLR2DKHu4s2DExAyY2vU671HokYE9s'),
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                           Positioned(
@@ -63,7 +72,8 @@ class ProfilScreen extends StatelessWidget {
                                   color: AppTheme.primaryColor,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                                child: const Icon(Icons.edit,
+                                    color: Colors.white, size: 16),
                               ),
                             ),
                           ),
@@ -77,39 +87,23 @@ class ProfilScreen extends StatelessWidget {
                           children: [
                             Text(
                               userProvider.name,
-                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.edit_outlined, size: 18, color: Colors.grey),
                           ],
                         ),
                       ),
                       Text(
                         userProvider.email,
-                        style: const TextStyle(color: Colors.grey, fontSize: 14),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'v1.0.0+1',
-                          style: TextStyle(
-                            color: AppTheme.primaryColor,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Stats Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -129,10 +123,18 @@ class ProfilScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildStatItem('Transaksi', transaksiProvider.totalTransaksiCount.toString()),
-                        Container(width: 1, height: 40, color: Colors.grey.withOpacity(0.2)),
-                        _buildStatItem('Kategori', transaksiProvider.uniqueKategoriCount.toString()),
-                        Container(width: 1, height: 40, color: Colors.grey.withOpacity(0.2)),
+                        _buildStatItem('Transaksi',
+                            transaksiProvider.totalTransaksiCount.toString()),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: Colors.grey.withOpacity(0.2)),
+                        _buildStatItem('Kategori',
+                            kategoriProvider.daftarKategori.length.toString()),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: Colors.grey.withOpacity(0.2)),
                         _buildStatItem('Member', 'Pro'),
                       ],
                     ),
@@ -144,19 +146,24 @@ class ProfilScreen extends StatelessWidget {
                 // Settings List
                 _buildSectionTitle('Pengaturan Aplikasi'),
                 _buildMenuItem(
-                  Icons.dark_mode_outlined, 
-                  'Mode Gelap', 
+                  Icons.dark_mode_outlined,
+                  'Mode Gelap',
                   Colors.purple,
                   trailing: Switch(
                     value: isDark,
                     onChanged: (val) => themeProvider.toggleTheme(val),
-                    activeColor: AppTheme.primaryColor,
+                    activeThumbColor: AppTheme.primaryColor,
                   ),
                 ),
-                _buildMenuItem(Icons.person_outline, 'Edit Profil', Colors.blue, onTap: () => _editProfile(context, userProvider)),
-                _buildMenuItem(Icons.notifications_none, 'Notifikasi', Colors.orange, onTap: () => _showComingSoon(context)),
-                _buildMenuItem(Icons.security_outlined, 'Keamanan', Colors.green, onTap: () => _showComingSoon(context)),
-                
+                _buildMenuItem(Icons.person_outline, 'Edit Profil', Colors.blue,
+                    onTap: () => _editProfile(context, userProvider)),
+                _buildMenuItem(
+                    Icons.notifications_none, 'Notifikasi', Colors.orange,
+                    onTap: () => _showComingSoon(context)),
+                _buildMenuItem(
+                    Icons.security_outlined, 'Keamanan', Colors.green,
+                    onTap: () => _showComingSoon(context)),
+
                 const SizedBox(height: 24),
 
                 _buildSectionTitle('Riwayat Pembaruan (Changelog)'),
@@ -172,43 +179,112 @@ class ProfilScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildChangelogItem('❓ Halaman FAQ / Bantuan Interaktif'),
-                        _buildChangelogItem('👋 Deskripsi Onboarding Baru'),
-                        _buildChangelogItem('📘 Integrasi FAQ_FINTRACK.md'),
-                        _buildChangelogItem('⚙️ Halaman Pengaturan Baru'),
-                        _buildChangelogItem('💳 Nomor Akun Dashboard (YYYY MMDD)'),
-                        _buildChangelogItem('🌐 Atribusi www.somatechno.com'),
-                        _buildChangelogItem('🛠️ Relokasi Menu Backup'),
-                        _buildChangelogItem('🔍 Pencarian & Filter Riwayat'),
-                        _buildChangelogItem('💾 Export & Import Data (Backup)'),
-                        _buildChangelogItem('🔄 Filter Cerdas Jenis Transaksi'),
-                        _buildChangelogItem('🌈 Ikon & Warna di Dropdown'),
-                        _buildChangelogItem('🚧 Popup "Segera Hadir" Menu Profil'),
-                        _buildChangelogItem('🎨 Kelola Kategori (Ikon & Warna)'),
-                        _buildChangelogItem('🔒 Proteksi Kategori Wajib'),
-                        _buildChangelogItem('📧 Edit Email di Profil Saya'),
-                        _buildChangelogItem('🛠️ Relokasi Transaksi Otomatis'),
-                        _buildChangelogItem('👋 Onboarding untuk Pengguna Baru'),
-                        _buildChangelogItem('📸 Unggah Foto & Edit Nama Profil Profil'),
-                        _buildChangelogItem('💰 Tampilan Saldo Presisi (,00)'),
-                        _buildChangelogItem('🌗 Dukungan Mode Gelap'),
+                        _buildChangelogItem(
+                            '🕒 Detail Waktu (HH:mm) di Transaksi (2026-03-08)'),
+                        _buildChangelogItem(
+                            '👋 Sapaan Dinamis Berbasis Waktu (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📅 Grouping Hari di Dashboard (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📆 Batasan 30 Hari Terakhir di Home (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🖼️ Logo Aplikasi di Onboarding (2026-03-08)'),
+                        _buildChangelogItem(
+                            '⚖️ Berkas LICENSI MIT Project (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🖼️ Perbaikan Foto Kategori & Fallback (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📅 Grouping & Filter Riwayat Baru (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🗑️ Hilangkan Ikon Edit Nama (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📊 Logika Hitung Kategori diperbarui (2026-03-08)'),
+                        _buildChangelogItem(
+                            '❓ Halaman FAQ / Bantuan Interaktif (2026-03-08)'),
+                        _buildChangelogItem(
+                            '👋 Deskripsi Onboarding Baru (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📘 Integrasi FAQ_FINTRACK.md (2026-03-08)'),
+                        _buildChangelogItem(
+                            '⚙️ Halaman Pengaturan Baru (2026-03-08)'),
+                        _buildChangelogItem(
+                            '💳 Nomor Akun Dashboard (YYYY MMDD) (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🌐 Atribusi Powered by SomaTechno (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🛠️ Relokasi Menu Backup Data (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🔍 Pencarian & Filter Riwayat (2026-03-08)'),
+                        _buildChangelogItem(
+                            '💾 Export & Import Data (Backup) (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🔄 Filter Cerdas Jenis Transaksi (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🌈 Ikon & Warna di Dropdown (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🎨 Kelola Kategori (Ikon & Warna) (2026-03-08)'),
+                        _buildChangelogItem(
+                            '📸 Unggah Foto & Edit Nama Profil (2026-03-08)'),
+                        _buildChangelogItem(
+                            '🌗 Dukungan Full Mode Gelap (2026-03-08)'),
                       ],
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 24),
-                
+
                 _buildSectionTitle('Lainnya'),
-                _buildMenuItem(Icons.help_outline, 'FAQ / Bantuan', Colors.purple, onTap: () {
+                _buildMenuItem(
+                    Icons.help_outline, 'FAQ / Bantuan', Colors.purple,
+                    onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const FaqScreen()),
                   );
                 }),
-                _buildMenuItem(Icons.logout, 'Keluar', Colors.red, isLast: true),
-                
+                _buildMenuItem(Icons.logout, 'Keluar', Colors.red,
+                    isLast: true),
+
                 const SizedBox(height: 48),
+                Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Powered by',
+                        style: TextStyle(
+                            color: Colors.grey.withOpacity(0.5), fontSize: 10),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'www.somatechno.com',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'v1.0.0+1',
+                          style: TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
               ],
             ),
@@ -231,7 +307,7 @@ class ProfilScreen extends StatelessWidget {
   void _editProfile(BuildContext context, UserProvider provider) {
     final nameController = TextEditingController(text: provider.name);
     final emailController = TextEditingController(text: provider.email);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -259,7 +335,9 @@ class ProfilScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal')),
           TextButton(
             onPressed: () {
               if (nameController.text.trim().isNotEmpty) {
@@ -271,7 +349,7 @@ class ProfilScreen extends StatelessWidget {
                   const SnackBar(content: Text('Nama tidak boleh kosong')),
                 );
               }
-            }, 
+            },
             child: const Text('Simpan'),
           ),
         ],
@@ -279,13 +357,13 @@ class ProfilScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildChangelogItem(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: AppTheme.primaryColor, size: 14),
+          const Icon(Icons.check_circle,
+              color: AppTheme.primaryColor, size: 14),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -305,7 +383,8 @@ class ProfilScreen extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+          style: const TextStyle(
+              fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
         ),
       ),
     );
@@ -314,13 +393,15 @@ class ProfilScreen extends StatelessWidget {
   Widget _buildStatItem(String label, String value) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(value,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String title, Color color, {bool isLast = false, Widget? trailing, VoidCallback? onTap}) {
+  Widget _buildMenuItem(IconData icon, String title, Color color,
+      {bool isLast = false, Widget? trailing, VoidCallback? onTap}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       decoration: BoxDecoration(
@@ -347,10 +428,13 @@ class ProfilScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
-                trailing ?? const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                trailing ??
+                    const Icon(Icons.chevron_right,
+                        color: Colors.grey, size: 20),
               ],
             ),
           ),
@@ -371,4 +455,3 @@ class ProfilScreen extends StatelessWidget {
     );
   }
 }
-

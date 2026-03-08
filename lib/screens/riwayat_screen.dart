@@ -18,9 +18,10 @@ class RiwayatScreen extends StatefulWidget {
 
 class _RiwayatScreenState extends State<RiwayatScreen> {
   String _selectedType = 'Semua';
+  String _selectedMonth = 'Semua';
   String _searchQuery = '';
-  DateTime? _selectedDate;
-  final List<String> _filters = ['Semua', 'Pemasukan', 'Pengeluaran'];
+  bool _isSearching = false;
+  final List<String> _types = ['Semua', 'Pemasukan', 'Pengeluaran'];
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -31,7 +32,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
 
   void _showOptions(BuildContext context, Transaksi t) {
     final provider = Provider.of<TransaksiProvider>(context, listen: false);
-    
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -43,30 +44,43 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40, height: 4,
-              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: 24),
             ListTile(
               leading: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: Colors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)),
                 child: const Icon(Icons.edit_outlined, color: Colors.blue),
               ),
-              title: const Text('Edit Transaksi', style: TextStyle(fontWeight: FontWeight.bold)),
+              title: const Text('Edit Transaksi',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TransaksiScreen(transaksi: t)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TransaksiScreen(transaksi: t)));
               },
             ),
             const SizedBox(height: 8),
             ListTile(
               leading: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: Colors.red.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)),
                 child: const Icon(Icons.delete_outline, color: Colors.red),
               ),
-              title: const Text('Hapus Transaksi', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+              title: const Text('Hapus Transaksi',
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
               onTap: () {
                 Navigator.pop(context);
                 _confirmDelete(context, provider, t.id);
@@ -78,48 +92,27 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
     );
   }
 
-  void _confirmDelete(BuildContext context, TransaksiProvider provider, String id) {
+  void _confirmDelete(
+      BuildContext context, TransaksiProvider provider, String id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Hapus Transaksi?'),
         content: const Text('Tindakan ini tidak dapat dibatalkan.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal')),
           TextButton(
             onPressed: () {
               provider.hapusTransaksi(id);
               Navigator.pop(context);
-            }, 
+            },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppTheme.primaryColor,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null) {
-      setState(() => _selectedDate = picked);
-    }
   }
 
   @override
@@ -128,120 +121,174 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor:
+          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Riwayat Transaksi'),
-        centerTitle: true,
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                decoration: const InputDecoration(
+                  hintText: 'Cari transaksi...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (val) => setState(() => _searchQuery = val),
+              )
+            : const Text('Riwayat Transaksi'),
+        centerTitle: !_isSearching,
         backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
-          if (_selectedDate != null)
-            IconButton(
-              icon: const Icon(Icons.event_busy, color: Colors.red),
-              onPressed: () => setState(() => _selectedDate = null),
-              tooltip: 'Hapus filter tanggal',
-            ),
           IconButton(
-            icon: Icon(Icons.calendar_month, color: _selectedDate != null ? AppTheme.primaryColor : Colors.grey),
-            onPressed: () => _selectDate(context),
-            tooltip: 'Filter Tanggal',
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) {
+                  _searchQuery = '';
+                  _searchController.clear();
+                }
+              });
+            },
           ),
         ],
       ),
       body: Consumer2<TransaksiProvider, KategoriProvider>(
         builder: (context, provider, kategoriProvider, child) {
           final allDocs = provider.daftarTransaksi;
-          
+
+          // Get available months for dropdown
+          final monthDates = allDocs
+              .map((t) => DateTime(t.tanggal.year, t.tanggal.month))
+              .toSet()
+              .toList();
+          monthDates.sort((a, b) => b.compareTo(a));
+          final monthOptions = ['Semua'] +
+              monthDates.map((d) => DateFormat('MMMM yyyy').format(d)).toList();
+
           // Apply filter
           final filteredDocs = allDocs.where((t) {
             // Type Filter
-            bool typeMatch = _selectedType == 'Semua' || t.jenis.toLowerCase() == _selectedType.toLowerCase();
-            
-            // Search Filter
-            bool searchMatch = _searchQuery.isEmpty || t.keterangan.toLowerCase().contains(_searchQuery.toLowerCase()) || t.kategori.toLowerCase().contains(_searchQuery.toLowerCase());
-            
-            // Date Filter
-            bool dateMatch = _selectedDate == null || 
-              (t.tanggal.year == _selectedDate!.year && 
-               t.tanggal.month == _selectedDate!.month && 
-               t.tanggal.day == _selectedDate!.day);
+            bool typeMatch = _selectedType == 'Semua' ||
+                t.jenis.toLowerCase() == _selectedType.toLowerCase();
 
-            return typeMatch && searchMatch && dateMatch;
+            // Search Filter
+            bool searchMatch = _searchQuery.isEmpty ||
+                t.keterangan
+                    .toLowerCase()
+                    .contains(_searchQuery.toLowerCase()) ||
+                t.kategori.toLowerCase().contains(_searchQuery.toLowerCase());
+
+            // Month Filter
+            bool monthMatch = _selectedMonth == 'Semua' ||
+                DateFormat('MMMM yyyy').format(t.tanggal) == _selectedMonth;
+
+            return typeMatch && searchMatch && monthMatch;
           }).toList();
+
+          // Performance optimization: Group by day
+          final Map<String, List<Transaksi>> grouped = {};
+          for (var t in filteredDocs) {
+            final dayKey = DateFormat('EEEE, dd MMM yyyy').format(t.tanggal);
+            if (!grouped.containsKey(dayKey)) grouped[dayKey] = [];
+            grouped[dayKey]!.add(t);
+          }
+          final sortedDays = grouped.keys.toList();
 
           return Column(
             children: [
-              // Search Bar
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (val) => setState(() => _searchQuery = val),
-                  decoration: InputDecoration(
-                    hintText: 'Cari transaksi atau kategori...',
-                    prefixIcon: const Icon(Icons.search, size: 20),
-                    suffixIcon: _searchQuery.isNotEmpty 
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 20),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _searchQuery = '');
-                          },
-                        ) 
-                      : null,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  ),
-                ),
-              ),
-
-              // Filter Chips
+              // Filter Toolbar
               Container(
-                height: 50,
+                height: 60,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ListView.separated(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _filters.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final filter = _filters[index];
-                    final isSelected = _selectedType == filter;
-                    return ChoiceChip(
-                      label: Text(filter),
-                      selected: isSelected,
-                      onSelected: (val) {
-                        setState(() => _selectedType = filter);
-                      },
-                      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-                      labelStyle: TextStyle(
-                        color: isSelected ? AppTheme.primaryColor : Colors.grey,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        fontSize: 13,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
-                          color: isSelected ? AppTheme.primaryColor : Colors.grey.withOpacity(0.2),
+                  children: [
+                    // Month Dropdown
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: _selectedMonth != 'Semua'
+                                ? AppTheme.primaryColor
+                                : Colors.grey.withOpacity(0.2),
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _selectedMonth,
+                            items: monthOptions
+                                .map((m) => DropdownMenuItem(
+                                      value: m,
+                                      child: Text(m,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: _selectedMonth == m
+                                                ? AppTheme.primaryColor
+                                                : Colors.grey,
+                                            fontWeight: _selectedMonth == m
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          )),
+                                    ))
+                                .toList(),
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() => _selectedMonth = val);
+                              }
+                            },
+                            icon: Icon(Icons.keyboard_arrow_down,
+                                size: 18,
+                                color: _selectedMonth != 'Semua'
+                                    ? AppTheme.primaryColor
+                                    : Colors.grey),
+                          ),
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    // Type Chips
+                    ..._types.map((filter) {
+                      final isSelected = _selectedType == filter;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Center(
+                          child: ChoiceChip(
+                            label: Text(filter),
+                            selected: isSelected,
+                            onSelected: (val) {
+                              setState(() => _selectedType = filter);
+                            },
+                            selectedColor:
+                                AppTheme.primaryColor.withOpacity(0.2),
+                            labelStyle: TextStyle(
+                              color: isSelected
+                                  ? AppTheme.primaryColor
+                                  : Colors.grey,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              fontSize: 13,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: isSelected
+                                    ? AppTheme.primaryColor
+                                    : Colors.grey.withOpacity(0.2),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               ),
-
-              if (_selectedDate != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Row(
-                    children: [
-                      Icon(Icons.event, size: 14, color: AppTheme.primaryColor.withOpacity(0.7)),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Tanggal: ${DateFormat('dd MMMM yyyy').format(_selectedDate!)}',
-                        style: TextStyle(fontSize: 12, color: AppTheme.primaryColor, fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
 
               // Transaction List
               Expanded(
@@ -250,12 +297,11 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.search_off, size: 64, color: Colors.grey.withOpacity(0.5)),
+                            Icon(Icons.search_off,
+                                size: 64, color: Colors.grey.withOpacity(0.5)),
                             const SizedBox(height: 16),
                             Text(
-                              _searchQuery.isNotEmpty || _selectedDate != null
-                                ? 'Hasil tidak ditemukan'
-                                : 'Tidak ada riwayat transaksi',
+                              'Hasil tidak ditemukan',
                               style: const TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -263,27 +309,60 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.all(16),
-                        itemCount: filteredDocs.length,
-                        itemBuilder: (context, index) {
-                          final t = filteredDocs[index];
-                          
-                          // Find category data for icon & color
-                          final catData = kategoriProvider.daftarKategori.firstWhere(
-                            (c) => c.nama == t.kategori,
-                            orElse: () => Kategori(
-                              id: '', nama: t.kategori, iconCode: Icons.category.codePoint, 
-                              jenis: t.jenis, colorValue: Colors.grey.value
-                            ),
-                          );
+                        itemCount: sortedDays.length,
+                        itemBuilder: (context, dayIndex) {
+                          final day = sortedDays[dayIndex];
+                          final dayTransactions = grouped[day]!;
 
-                          return TransaksiCard(
-                            category: t.kategori,
-                            dateDesc: '${t.keterangan}${t.keterangan.isNotEmpty ? ' • ' : ''}${DateFormat('dd MMM yyyy').format(t.tanggal)}',
-                            amount: NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 2).format(t.jumlah).trim(),
-                            icon: catData.iconData,
-                            iconColor: Color(catData.colorValue),
-                            isIncome: t.jenis == 'pemasukan',
-                            onTap: () => _showOptions(context, t),
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8, bottom: 12, top: 8),
+                                child: Text(
+                                  day,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                              ...dayTransactions.map((t) {
+                                final catData = kategoriProvider.daftarKategori
+                                    .firstWhere(
+                                  (c) => c.nama == t.kategori,
+                                  orElse: () => Kategori(
+                                      id: '',
+                                      nama: t.kategori,
+                                      iconCode: Icons.category.codePoint,
+                                      jenis: t.jenis,
+                                      colorValue: Colors.grey.value),
+                                );
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: TransaksiCard(
+                                    category: t.kategori,
+                                    dateDesc:
+                                        '${t.keterangan}${t.keterangan.isNotEmpty ? ' • ' : ''}${DateFormat('HH:mm').format(t.tanggal)}',
+                                    amount: NumberFormat.currency(
+                                            locale: 'id_ID',
+                                            symbol: '',
+                                            decimalDigits: 2)
+                                        .format(t.jumlah)
+                                        .trim(),
+                                    icon: catData.iconData,
+                                    iconColor: Color(catData.colorValue),
+                                    isIncome: t.jenis == 'pemasukan',
+                                    onTap: () => _showOptions(context, t),
+                                    imagePath: catData.imagePath,
+                                  ),
+                                );
+                              }),
+                              const SizedBox(height: 16), // Jarak antar hari
+                            ],
                           );
                         },
                       ),

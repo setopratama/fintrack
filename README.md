@@ -12,6 +12,12 @@
   Data tersimpan langsung di perangkat Anda, dengan fitur backup & restore via file JSON.
 </p>
 
+<p align="center">
+  <a href="https://github.com/setopratama/fintrack/blob/main/app-release.apk">
+    <img src="https://img.shields.io/badge/Download-APK%20Release-success?style=for-the-badge&logo=android&logoColor=white"/>
+  </a>
+</p>
+
 ---
 
 ## 📋 Daftar Isi
@@ -20,7 +26,8 @@
 - [Screenshot](#-screenshot)
 - [Teknologi](#-teknologi)
 - [Struktur Data](#-struktur-data)
-- [Instalasi & Setup](#-instalasi--setup)
+- [Instalasi Cepat (Pengguna)](#-instalasi-cepat-pengguna)
+- [Instalasi & Setup (Developer)](#-instalasi--setup-developer)
 - [Cara Penggunaan](#-cara-penggunaan)
 - [Edit & Hapus Transaksi](#-edit--hapus-transaksi)
 - [Fitur Backup & Restore](#-fitur-backup--restore)
@@ -154,7 +161,15 @@ class Transaksi {
 
 ---
 
-## 🚀 Instalasi & Setup
+### ⚡ Instalasi Cepat (Pengguna)
+
+Bagi Anda yang hanya ingin menggunakan aplikasi tanpa melakukan build dari source code, Anda dapat langsung mengunduh file APK rilis terbaru di sini:
+
+👉 **[Download app-release.apk](https://github.com/setopratama/fintrack/blob/main/app-release.apk)**
+
+---
+
+### 🛠 Instalasi & Setup (Developer)
 
 ### Prasyarat
 
@@ -177,8 +192,11 @@ flutter pub get
 flutter run
 
 # 4. Build APK untuk distribusi
-flutter build apk --release
+flutter build apk --release --no-tree-shake-icons
 ```
+
+> [!IMPORTANT]
+> **Catatan Build:** Gunakan flag `--no-tree-shake-icons` saat membuild APK. Hal ini diperlukan karena FinTrack menggunakan ikon dinamis yang kodenya disimpan di metadata kategori, sehingga sistem optimalisasi otomatis Flutter (*Tree Shaking*) tidak diperbolehkan menghapus font ikon tersebut.
 
 ### Konfigurasi `pubspec.yaml`
 

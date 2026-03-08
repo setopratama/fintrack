@@ -29,15 +29,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             const Spacer(flex: 2),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(32),
               ),
-              child: const Icon(
-                Icons.account_balance_wallet_outlined,
-                size: 80,
-                color: Colors.white,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/icon/app_icon.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -71,6 +75,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               decoration: InputDecoration(
                 hintText: 'Nama kamu di sini...',
                 hintStyle: const TextStyle(color: Colors.white54, fontSize: 18, fontWeight: FontWeight.normal),
+                filled: false,
                 enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white54),
                 ),

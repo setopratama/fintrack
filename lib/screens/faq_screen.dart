@@ -73,19 +73,40 @@ class FaqScreen extends StatelessWidget {
             _buildSection(context, '🔒 Keamanan & Privasi', [
               _buildFaqItem('Di mana data saya disimpan?', 'Data disimpan di Local Storage perangkat Anda. Kami tidak menggunakan server cloud, data Anda 100% privat.'),
             ]),
+            
+            _buildSection(context, '⚡ Performa & Penyimpanan', [
+              _buildFaqItem('Sistem penyimpanan yang digunakan?', 'FinTrack menggunakan sistem penyimpanan lokal yang menyimpan data dalam format teks JSON di memori internal perangkat Anda.'),
+              _buildFaqItem('Bagaimana dengan penggunaan RAM?', 'Aplikasi meload seluruh data ke RAM saat dibuka agar pencarian dan filter berjalan instan tanpa loading.'),
+              _buildFaqItem('Apakah aplikasi akan melambat?', 'Untuk ribuan transaksi, performa akan tetap stabil. Data berupa teks sangat ringan bagi perangkat modern.'),
+            ]),
 
             const SizedBox(height: 40),
             Center(
               child: Column(
                 children: [
-                  const Text(
-                    'Support by www.somatechno.com',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                  Text(
+                    'Powered by',
+                    style: TextStyle(color: Colors.grey.withOpacity(0.5), fontSize: 10),
                   ),
                   const SizedBox(height: 4),
+                  const Text(
+                    'www.somatechno.com',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     'Kontak: setopratama@gmail.com',
-                    style: TextStyle(color: Colors.grey.withOpacity(0.6), fontSize: 12),
+                    style: TextStyle(color: Colors.grey.withOpacity(0.6), fontSize: 10),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Terakhir diupdate: 8 Maret 2026',
+                    style: TextStyle(color: Colors.grey.withOpacity(0.4), fontSize: 10),
                   ),
                 ],
               ),

@@ -14,6 +14,7 @@ Berikut adalah pertanyaan yang sering diajukan mengenai FinTrack. Jika pertanyaa
 6. [Filter & Pencarian](#-filter--pencarian)
 7. [Backup & Restore](#-backup--restore)
 8. [Keamanan & Privasi](#-keamanan--privasi)
+9. [Performa & Penyimpanan](#-performa--penyimpanan)
 
 ---
 
@@ -103,6 +104,19 @@ Berikut adalah pertanyaan yang sering diajukan mengenai FinTrack. Jika pertanyaa
 
 ### P: Di mana data saya disimpan?
 **J:** Data Anda disimpan di **Local Storage** perangkat Anda. Kami tidak menggunakan server cloud, sehingga tidak ada orang lain (termasuk kami) yang bisa melihat data keuangan Anda.
+
+---
+
+## ⚡ Performa & Penyimpanan
+
+### P: Bagaimana metode penyimpanan data FinTrack?
+**J:** FinTrack menggunakan sistem penyimpanan lokal yang menyimpan data dalam format teks JSON di memori internal perangkat Anda.
+
+### P: Seberapa cepat aplikasi meload data jika sudah banyak?
+**J:** FinTrack dirancang untuk tetap instan pada penggunaan normal (ribuan transaksi). Seluruh data akan dimuat ke dalam memori RAM saat aplikasi dibuka agar proses pencarian dan filter berjalan secepat kilat tanpa jeda loading.
+
+### P: Apakah data ribuan transaksi akan membuat HP berat?
+**J:** Tidak. Karena data transaksi berupa teks, penggunaan RAM sangatlah kecil. Untuk 5.000 transaksi hanya memakan sedikit ruang di RAM. Performa akan tetap stabil bahkan setelah bertahun-tahun penggunaan aktif.
 
 ---
 

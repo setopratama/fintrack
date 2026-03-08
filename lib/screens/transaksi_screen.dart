@@ -87,7 +87,8 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                color:
+                    isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -100,7 +101,8 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                       onTap: () {
                         setState(() {
                           _transactionType = 'pemasukan';
-                          _selectedCategory = null; // Reset category when switching type
+                          _selectedCategory =
+                              null; // Reset category when switching type
                         });
                       },
                     ),
@@ -113,7 +115,8 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                       onTap: () {
                         setState(() {
                           _transactionType = 'pengeluaran';
-                          _selectedCategory = null; // Reset category when switching type
+                          _selectedCategory =
+                              null; // Reset category when switching type
                         });
                       },
                     ),
@@ -124,7 +127,11 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             const SizedBox(height: 32),
 
             // Amount Input
-            const Text('Jumlah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey)),
+            const Text('Jumlah',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey)),
             const SizedBox(height: 8),
             TextField(
               controller: _amountController,
@@ -137,52 +144,68 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Rp', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor)),
+                  child: Text('Rp',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryColor)),
                 ),
-                prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                prefixIconConstraints:
+                    const BoxConstraints(minWidth: 0, minHeight: 0),
                 hintText: '0',
-                fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                fillColor:
+                    isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
               ),
             ),
             const SizedBox(height: 24),
 
             // Category Picker
-            const Text('Kategori', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey)),
+            const Text('Kategori',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey)),
             const SizedBox(height: 8),
             Consumer<KategoriProvider>(
               builder: (context, kategoriProvider, child) {
-                final filteredCategories = kategoriProvider.filterByJenis(_transactionType);
-                
+                final filteredCategories =
+                    kategoriProvider.filterByJenis(_transactionType);
+
                 // If current selected category is not in the filtered list, reset it
-                if (_selectedCategory != null && !filteredCategories.any((element) => element.nama == _selectedCategory)) {
+                if (_selectedCategory != null &&
+                    !filteredCategories
+                        .any((element) => element.nama == _selectedCategory)) {
                   _selectedCategory = null;
                 }
 
                 return DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.category_outlined, color: AppTheme.primaryColor),
+                    prefixIcon: const Icon(Icons.category_outlined,
+                        color: AppTheme.primaryColor),
                     hintText: 'Pilih Kategori',
-                    fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                    fillColor: isDark
+                        ? const Color(0xFF1E293B)
+                        : const Color(0xFFF8FAFC),
                   ),
                   items: filteredCategories
                       .map((e) => DropdownMenuItem(
-                        value: e.nama, 
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Color(e.colorValue).withOpacity(0.1),
-                                shape: BoxShape.circle,
+                          value: e.nama,
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Color(e.colorValue).withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(e.iconData,
+                                    size: 18, color: Color(e.colorValue)),
                               ),
-                              child: Icon(e.iconData, size: 18, color: Color(e.colorValue)),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(e.nama),
-                          ],
-                        )
-                      ))
+                              const SizedBox(width: 12),
+                              Text(e.nama),
+                            ],
+                          )))
                       .toList(),
                   onChanged: (val) => setState(() => _selectedCategory = val),
                   validator: (value) => value == null ? 'Pilih kategori' : null,
@@ -192,28 +215,40 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             const SizedBox(height: 24),
 
             // Date Picker
-            const Text('Tanggal', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey)),
+            const Text('Tanggal',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey)),
             const SizedBox(height: 8),
             InkWell(
               onTap: () async {
                 final date = await showDatePicker(
-                  context: context, initialDate: _selectedDate,
-                  firstDate: DateTime(2020), lastDate: DateTime(2100),
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: DateTime(2020),
+                  lastDate: DateTime(2100),
                 );
                 if (date != null) setState(() => _selectedDate = date);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                   border: Border.all(color: Colors.black.withOpacity(0.05)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today_outlined, color: AppTheme.primaryColor, size: 20),
+                    const Icon(Icons.calendar_today_outlined,
+                        color: AppTheme.primaryColor, size: 20),
                     const SizedBox(width: 12),
-                    Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}', style: const TextStyle(fontSize: 16)),
+                    Text(
+                        '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                        style: const TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
@@ -221,15 +256,25 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             const SizedBox(height: 24),
 
             // Notes
-            const Text('Keterangan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey)),
+            const Text('Keterangan',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey)),
             const SizedBox(height: 8),
             TextField(
               controller: _noteController,
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'Tambahkan catatan (opsional)',
-                prefixIcon: const Column(children: [Padding(padding: EdgeInsets.only(top: 16.0), child: Icon(Icons.description_outlined, color: AppTheme.primaryColor))]),
-                fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                prefixIcon: const Column(children: [
+                  Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Icon(Icons.description_outlined,
+                          color: AppTheme.primaryColor))
+                ]),
+                fillColor:
+                    isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
               ),
             ),
           ],
@@ -239,11 +284,15 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF0F172A) : Colors.white,
-          border: Border(top: BorderSide(color: Colors.black.withOpacity(0.05))),
+          border:
+              Border(top: BorderSide(color: Colors.black.withOpacity(0.05))),
         ),
         child: Row(
           children: [
-            Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Batal'))),
+            Expanded(
+                child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Batal'))),
             const SizedBox(width: 16),
             Expanded(
               flex: 2,
@@ -261,7 +310,8 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
   void _saveTransaction() async {
     final amountText = _amountController.text.trim();
     if (amountText.isEmpty || _selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mohon isi jumlah dan kategori')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mohon isi jumlah dan kategori')));
       return;
     }
 
@@ -295,20 +345,37 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
     if (mounted) Navigator.pop(context);
   }
 
-  Widget _buildTypeToggleItem({required String label, required bool isActive, required Color activeColor, required VoidCallback onTap}) {
+  Widget _buildTypeToggleItem(
+      {required String label,
+      required bool isActive,
+      required Color activeColor,
+      required VoidCallback onTap}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isActive ? (isDark ? const Color(0xFF334155) : Colors.white) : Colors.transparent,
+          color: isActive
+              ? (isDark ? const Color(0xFF334155) : Colors.white)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: isActive ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))] : null,
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2))
+                ]
+              : null,
         ),
-        child: Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: isActive ? activeColor : Colors.grey)),
+        child: Text(label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: isActive ? activeColor : Colors.grey)),
       ),
     );
   }
 }
-
