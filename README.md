@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/setopratama/fintrack/blob/main/app-release.apk">
+  <a href="https://github.com/setopratama/fintrack/releases/download/v1.0.0/app-release.apk">
     <img src="https://img.shields.io/badge/Download-APK%20Release-success?style=for-the-badge&logo=android&logoColor=white"/>
   </a>
 </p>
@@ -166,7 +166,7 @@ class Transaksi {
 
 Bagi Anda yang hanya ingin menggunakan aplikasi tanpa melakukan build dari source code, Anda dapat langsung mengunduh file APK rilis terbaru di sini:
 
-👉 **[Download app-release.apk](https://github.com/setopratama/fintrack/blob/main/app-release.apk)** | 📝 **[Release Notes](RELEASE_NOTES.md)**
+👉 **[Download FinTrack APK v1.0.0](https://github.com/setopratama/fintrack/releases/download/v1.0.0/app-release.apk)** | 📝 **[Release Notes](RELEASE_NOTES.md)**
 
 ---
 
