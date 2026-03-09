@@ -22,6 +22,7 @@
 
 ## 📋 Daftar Isi
 
+- [Release Notes](RELEASE_NOTES.md)
 - [Fitur Utama](#-fitur-utama)
 - [Screenshot](#-screenshot)
 - [Teknologi](#-teknologi)
@@ -165,7 +166,7 @@ class Transaksi {
 
 Bagi Anda yang hanya ingin menggunakan aplikasi tanpa melakukan build dari source code, Anda dapat langsung mengunduh file APK rilis terbaru di sini:
 
-👉 **[Download app-release.apk](https://github.com/setopratama/fintrack/blob/main/app-release.apk)**
+👉 **[Download app-release.apk](https://github.com/setopratama/fintrack/blob/main/app-release.apk)** | 📝 **[Release Notes](RELEASE_NOTES.md)**
 
 ---
 
