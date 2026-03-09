@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/setopratama/fintrack/releases/download/v1.0.0/app-release.apk">
+  <a href="https://github.com/setopratama/fintrack/releases/tag/v1.0.0">
     <img src="https://img.shields.io/badge/Download-APK%20Release-success?style=for-the-badge&logo=android&logoColor=white"/>
   </a>
 </p>
